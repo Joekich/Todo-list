@@ -11,18 +11,16 @@ const Title = styled.h2`
   color: #583E26;
 `;
 
-const TodoList = ({ title, tasks, editTask, deleteTask, toggleTask, isCompleted = false }) => {
+const TodoList = ({ title, tasks, updateTask, deleteTask, isCompleted = false }) => {
     return (
         <ListContainer>
             <Title>{title}</Title>
-            {tasks.map((task, index) => (
+            {tasks.map((task) => (
                 <TodoItem
-                    key={index}
+                    key={task.id}
                     task={task}
-                    index={index}
-                    editTask={editTask}
+                    updateTask={updateTask}
                     deleteTask={deleteTask}
-                    toggleTask={toggleTask}
                     isCompleted={isCompleted}
                 />
             ))}

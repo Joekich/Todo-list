@@ -50,8 +50,9 @@ const TodoInput = ({ addTask }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (task.trim()) {
-      addTask(task);
+
+    if (task) {
+      addTask(task.trim());
       setTask("");
     }
   };

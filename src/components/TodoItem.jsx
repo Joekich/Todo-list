@@ -29,12 +29,10 @@ const TaskText = styled.span.withConfig({
   margin-bottom: 0.5rem;
   text-decoration: ${(props) => (props.isCompleted ? "line-through" : "none")};
   
-
   @media (min-width: 768px) {
     margin-bottom: 0;
     overflow: visible;
   }
-    
 `;
 
 const ButtonContainer = styled.div`
@@ -78,13 +76,13 @@ const Button = styled.button.withConfig({
   }
 `;
 
-const TodoItem = ({ task, index, editTask, deleteTask, toggleTask, isCompleted }) => {
+const TodoItem = ({ task, deleteTask, updateTask, isCompleted }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [newText, setNewText] = useState(task.text);
 
   const handleEdit = () => {
     if (isEditing) {
-      editTask(index, newText, isCompleted);
+      updateTask(task.id, 'edit', newText);
     }
     setIsEditing(!isEditing);
   };
@@ -95,7 +93,7 @@ const TodoItem = ({ task, index, editTask, deleteTask, toggleTask, isCompleted }
         <input
           type="text"
           value={newText}
-          onChange={(e) => setNewText(e.target.value)}
+          onChange={(e) => isEditing && setNewText(e.target.value)}
         />
       ) : (
         <TaskText isCompleted={isCompleted}>{task.text}</TaskText>
@@ -104,13 +102,13 @@ const TodoItem = ({ task, index, editTask, deleteTask, toggleTask, isCompleted }
         <Button bgcolor="#EC9704" hovercolor="#d68904" onClick={handleEdit}>
           {isEditing ? "Save" : "Edit"}
         </Button>
-        <Button bgcolor="#dc3545" hovercolor="#c82333" onClick={() => deleteTask(index, isCompleted)}>
+        <Button bgcolor="#dc3545" hovercolor="#c82333" onClick={() => deleteTask(task.id, isCompleted)}>
           Delete
         </Button>
         <Button
           bgcolor={isCompleted ? "#0077b6" : "#0d730b"}
           hovercolor={isCompleted ? "#005f8a" : "#218838"}
-          onClick={() => toggleTask(index, isCompleted)}
+          onClick={() => updateTask(task.id, 'toggle')}
         >
           {isCompleted ? "Undo" : "Complete"}
         </Button>
