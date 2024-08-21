@@ -26,11 +26,29 @@ export const Container = styled.div`
 `;
 
 export const Header = styled.header`
+  display: flex;
+  justify-content: space-between;
   background-color: #A78B71;
   color: white;
   padding: 1rem;
-  text-align: center;
+  text-align: left;
   width: 100%;
   border-radius: 8px;
   margin-bottom: 2rem;
+
+  div {
+    font-size: 2rem;
+    color: #0077b6;
+`;
+
+export const TaskCounterContainer = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+
+  span {
+    margin-right: 10px;
+    font-size: 1.2rem;
+    color: #555;
+  }
 `;

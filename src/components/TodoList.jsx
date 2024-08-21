@@ -9,6 +9,7 @@ const Title = styled.h2`
   margin-bottom: 1rem;
   font-size: 1.5rem;
   color: #583E26;
+  padding: 1rem;
 `;
 
 const TodoList = ({ title, tasks, updateTask, deleteTask, isCompleted = false }) => {

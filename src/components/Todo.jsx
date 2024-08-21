@@ -1,11 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { nanoid } from "nanoid";
 
 import TodoInput from "./TodoInput";
 import TodoList from "./TodoList";
 
-export function Todo() {
+export function Todo({ setTaskCounter }) {
     const [tasks, setTasks] = useState([]);
+
+    useEffect(() => {
+        const updateTaskCounter = () => {
+            const completedTasksCount = tasks.filter(task => task.isCompleted).length;
+            const totalTasksCount = tasks.length;
+
+            const counterColor = completedTasksCount === totalTasksCount && totalTasksCount > 0 ? '#0d730b' : '#0077b6';
+
+            setTaskCounter({
+                count: `${completedTasksCount}/${totalTasksCount}`,
+                color: counterColor,
+                show: totalTasksCount > 0
+            });
+        };
+
+        updateTaskCounter();
+    }, [tasks, setTaskCounter]);
 
     const addTask = (task) => {
         const newTask = {
@@ -68,3 +85,5 @@ export function Todo() {
         </>
     )
 }
+
+export default Todo;
