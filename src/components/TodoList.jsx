@@ -3,6 +3,9 @@ import TodoItem from "./TodoItem";
 
 const ListContainer = styled.div`
   width: 100%;
+  border: solid 1px #A78B71;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
 `;
 
 const Title = styled.h2`

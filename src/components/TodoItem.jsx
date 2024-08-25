@@ -1,14 +1,22 @@
 import { useState } from "react";
 import styled from "styled-components";
+import EditIcon from '../icons/EditIcon.svg?react';
+import DeleteIcon from '../icons/DeleteIcon.svg?react';
+import CompleteIcon from '../icons/CompleteIcon.svg?react';
+import UndoIcon from '../icons/UndoIcon.svg?react';
+import SaveIcon from '../icons/SaveIcon.svg?react'
 
 const ItemContainer = styled.div`
   background-color: #A78B71;
   padding: 1rem;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  margin-bottom: 1.5rem;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  margin: 0 auto;
+  width: 90%;
+  margin-bottom: 1.5rem;
 
   @media (min-width: 768px) {
     flex-direction: row;
@@ -99,18 +107,18 @@ const TodoItem = ({ task, deleteTask, updateTask, isCompleted }) => {
         <TaskText isCompleted={isCompleted}>{task.text}</TaskText>
       )}
       <ButtonContainer>
-        <Button bgcolor="#EC9704" hovercolor="#d68904" onClick={handleEdit}>
-          {isEditing ? "Save" : "Edit"}
+        <Button bgcolor="transparent" hovercolor="#d68904" onClick={handleEdit}>
+          {isEditing ? <SaveIcon /> : <EditIcon />}
         </Button>
-        <Button bgcolor="#dc3545" hovercolor="#c82333" onClick={() => deleteTask(task.id, isCompleted)}>
-          Delete
+        <Button bgcolor="transparent" hovercolor="#c82333" onClick={() => deleteTask(task.id, isCompleted)}>
+          <DeleteIcon />
         </Button>
         <Button
-          bgcolor={isCompleted ? "#0077b6" : "#0d730b"}
+          bgcolor="transparent"
           hovercolor={isCompleted ? "#005f8a" : "#218838"}
           onClick={() => updateTask(task.id, 'toggle')}
         >
-          {isCompleted ? "Undo" : "Complete"}
+          {isCompleted ? <UndoIcon /> : <CompleteIcon />}
         </Button>
       </ButtonContainer>
     </ItemContainer>
