@@ -1,33 +1,29 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { nanoid } from "nanoid";
-import { DndContext, useSensor, useSensors, PointerSensor, DragOverlay } from "@dnd-kit/core";
+import { DndContext, useSensor, useSensors, PointerSensor, DragOverlay, defaultDropAnimation } from "@dnd-kit/core";
+import { arrayMove } from '@dnd-kit/sortable';
 
 import TodoInput from "./TodoInput";
 import TodoList from "./TodoList";
 import ToggleSwitch from "./ToggleSwitch";
 import TodoItem from "./TodoItem";
 
+const dropAnimationConfig = { ...defaultDropAnimation };
+
 export function Todo({ setTaskCounter }) {
     const [tasks, setTasks] = useState([]);
     const [isDragEnabled, setIsDragEnabled] = useState(false);
     const [activeId, setActiveId] = useState(null);
-    const [dragItemDimensions, setDragItemDimensions] = useState({ width: 0, height: 0 });
 
     useEffect(() => {
-        const updateTaskCounter = () => {
-            const completedTasksCount = tasks.filter(task => task.isCompleted).length;
-            const totalTasksCount = tasks.length;
+        const completedTasksCount = tasks.filter(task => task.isCompleted).length;
+        const totalTasksCount = tasks.length;
 
-            const counterColor = completedTasksCount === totalTasksCount && totalTasksCount > 0 ? '#0d730b' : '#0077b6';
-
-            setTaskCounter({
-                count: `${completedTasksCount}/${totalTasksCount}`,
-                color: counterColor,
-                show: totalTasksCount > 0
-            });
-        };
-
-        updateTaskCounter();
+        setTaskCounter({
+            count: `${completedTasksCount}/${totalTasksCount}`,
+            color: completedTasksCount === totalTasksCount && totalTasksCount > 0 ? '#0d730b' : '#0077b6',
+            show: totalTasksCount > 0
+        });
     }, [tasks, setTaskCounter]);
 
     const addTask = (task) => {
@@ -36,7 +32,6 @@ export function Todo({ setTaskCounter }) {
             text: task,
             isCompleted: false
         };
-
         setTasks([...tasks, newTask]);
     };
 
@@ -54,72 +49,68 @@ export function Todo({ setTaskCounter }) {
             }
             return task;
         });
-
         setTasks(updatedTasks);
     };
 
     const deleteTask = (id) => setTasks(tasks.filter((element) => element.id !== id));
 
-    const { activeTasks, completedTasks } = tasks.reduce(
-        (acc, task) => {
-            if (task.isCompleted) {
-                acc.completedTasks.push(task);
-            } else {
-                acc.activeTasks.push(task);
-            }
-            return acc;
-        },
-        { activeTasks: [], completedTasks: [] }
-    );
+    const { activeTasks, completedTasks } = useMemo(() => {
+        return tasks.reduce(
+            (acc, task) => {
+                task.isCompleted ? acc.completedTasks.push(task) : acc.activeTasks.push(task);
+                return acc;
+            },
+            { activeTasks: [], completedTasks: [] }
+        );
+    }, [tasks]);
 
     const handleDragStart = (event) => {
-        const activeElement = event.active?.node;
-
-        if (activeElement) {
-            const { width, height } = activeElement.getBoundingClientRect();
-            setDragItemDimensions({ width, height });
-        }
-
         setActiveId(event.active.id);
     };
 
-    const handleDragEnd = (event) => {
-        setActiveId(null);
-        setDragItemDimensions({ width: 0, height: 0 });
-
+    const handleDragOver = (event) => {
         const { active, over } = event;
+
+        if (!over) return;
 
         const activeTask = tasks.find((task) => task.id === active.id);
 
-        if (!over) {
-            const isMovingToCompleted = activeTask.isCompleted === false;
-
-            const updatedTasks = tasks.map((task) =>
-                task.id === active.id ? { ...task, isCompleted: isMovingToCompleted } : task
+        if (over.id === 'active-tasks' || over.id === 'completed-tasks') {
+            setTasks((prev) =>
+                prev.map((task) =>
+                    task.id === activeTask.id ? { ...task, isCompleted: over.id === 'completed-tasks' } : task
+                )
             );
+        }
+    };
 
-            setTasks(updatedTasks);
+    const handleDragEnd = (event) => {
+        const { active, over } = event;
+
+        if (!over) {
+            setActiveId(null);
             return;
         }
 
+        const activeTask = tasks.find((task) => task.id === active.id);
         const overTask = tasks.find((task) => task.id === over.id);
 
-        if (activeTask.isCompleted !== overTask.isCompleted) {
-            const updatedTasks = tasks.map((task) =>
-                task.id === active.id ? { ...task, isCompleted: !task.isCompleted } : task
-            );
-
-            setTasks(updatedTasks);
+        if (!activeTask || !overTask || activeTask.isCompleted !== overTask.isCompleted) {
+            setActiveId(null);
             return;
         }
 
-        const oldIndex = tasks.findIndex((task) => task.id === active.id);
-        const newIndex = tasks.findIndex((task) => task.id === over.id);
-        const updatedTasks = [...tasks];
-        const [movedTask] = updatedTasks.splice(oldIndex, 1);
-        updatedTasks.splice(newIndex, 0, movedTask);
+        const containerTasks = activeTask.isCompleted ? completedTasks : activeTasks;
+        const oldIndex = containerTasks.findIndex((task) => task.id === active.id);
+        const newIndex = containerTasks.findIndex((task) => task.id === over.id);
 
-        setTasks(updatedTasks);
+        const sortedTasks = arrayMove(containerTasks, oldIndex, newIndex);
+
+        setTasks((prev) => [
+            ...prev.filter((task) => task.isCompleted !== activeTask.isCompleted),
+            ...sortedTasks,
+        ]);
+        setActiveId(null);
     };
 
     const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 10 } }));
@@ -135,15 +126,16 @@ export function Todo({ setTaskCounter }) {
             />
             <TodoInput addTask={addTask} />
             {isDragEnabled ? (
-                <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+                <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd} onDragOver={handleDragOver}>
                     <TodoList
                         activeTasks={activeTasks}
                         completedTasks={completedTasks}
                         updateTask={updateTask}
                         deleteTask={deleteTask}
                         isDragEnabled={isDragEnabled}
+                        activeId={activeId}
                     />
-                    <DragOverlay>
+                    <DragOverlay dropAnimation={dropAnimationConfig}>
                         {activeId ? (
                             <TodoItem
                                 task={tasks.find((task) => task.id === activeId)}
@@ -152,7 +144,6 @@ export function Todo({ setTaskCounter }) {
                                 isCompleted={tasks.find((task) => task.id === activeId)?.isCompleted}
                                 isDragEnabled={false}
                                 hideCompleteButton={true}
-                                dragItemDimensions={dragItemDimensions}
                                 isDragged={true}
                             />
                         ) : null}
