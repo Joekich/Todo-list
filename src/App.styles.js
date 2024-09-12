@@ -4,6 +4,7 @@ export const GlobalStyle = createGlobalStyle`
   *, *::before, *::after {
     box-sizing: border-box;
   }
+    
   body {
     overflow-y: scroll;
     margin: 0;
@@ -20,15 +21,20 @@ export const Container = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  max-width: 600px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 1rem;
   box-sizing: border-box;
+
+  @media (max-width: 1024px) {
+    flex-direction: column;
+    padding: 10px;
+  }
 `;
 
 export const Header = styled.header`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   background-color: #A78B71;
   color: white;
   padding: 1rem;
@@ -40,16 +46,25 @@ export const Header = styled.header`
   div {
     font-size: 2rem;
     color: #0077b6;
+  }
 `;
 
-export const TaskCounterContainer = styled.div`
-  display: flex;
-  align-items: center;
-  font-size: 20px;
+export const AddListButton = styled.button`
+  background-color: #A78B71;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
 
-  span {
-    margin-right: 10px;
-    font-size: 1.2rem;
-    color: #555;
+  &:hover {
+    background-color: #896550;
+  }
+
+  &:active {
+    background-color: #6F4E37;
   }
 `;
