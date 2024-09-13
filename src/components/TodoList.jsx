@@ -7,7 +7,7 @@ import { CSS } from "@dnd-kit/utilities"
 import { useState, memo } from "react";
 import { nanoid } from "nanoid";
 
-const ListContainer = styled.div.withConfig({
+const ListContainer = styled.article.withConfig({
   shouldForwardProp: (prop) => !['isOverlay', 'isDragging'].includes(prop),
 })`
   border: solid 1px #A78B71;
@@ -23,7 +23,7 @@ const ListContainer = styled.div.withConfig({
   flex-shrink: 0;
   height: 410px;
   background-color: ${({ isOverlay }) => (isOverlay ? '#ebd8c7' : '#ffebd9')};
-  outline: ${({ isOverlay }) => (isOverlay ? '#d4bba5 2px solid' : 'none')};
+  outline: ${({ isOverlay }) => (isOverlay ? '#d68904 2px solid' : 'none')};
   opacity: ${({ isDragging }) => (isDragging ? '0.5' : '1')};
 
   @media (max-width: 1024px) {
@@ -103,10 +103,11 @@ const TasksContainer = styled.div`
   }
 `;
 
-const DragButton = styled.button`
+const DragButton = styled.button.withConfig({
+  shouldForwardProp: (prop) => !['isDragging', 'isOverlay'].includes(prop),
+})`
   background-color: #A78B71;
   border: none;
-  cursor: pointer;
   font-size: 1.2rem;
   margin-left: 10px;
   border-radius: 5px;
@@ -114,12 +115,10 @@ const DragButton = styled.button`
   height: 31px;
   width: 55px;
 
+  cursor: ${({ isOverlay }) => (isOverlay ? 'grabbing' : 'grab')};
+
   &:hover {
     background-color: #896550;
-  }
-
-  &:active {
-    cursor: grab;
   }
 
   @media (max-width: 389px) {
@@ -266,7 +265,7 @@ const TodoList = memo(({ id, tasks, title, isDragging, isOverlay, setTodoLists }
           <EditButton onClick={handleEditListName}>Edit</EditButton>
           <AddTaskButton onClick={() => setIsAddTaskModalOpen(true)}>Add Task</AddTaskButton>
           <DeleteButton onClick={handleDeleteList}>Delete</DeleteButton>
-          <DragButton  {...attributes} {...listeners}>:::</DragButton>
+          <DragButton isOverlay={isOverlay} {...attributes} {...listeners}>:::</DragButton>
         </ButtonContainer>
       </TitleContainer>
       <TasksContainer>

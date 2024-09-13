@@ -17,14 +17,14 @@ const ModalAddTask = ({ isOpen, onClose, onAddTask, task, isEditMode }) => {
     const [taskContent, setTaskContent] = useState('');
 
     useEffect(() => {
-        if (isEditMode && task) {
-            setTaskName(task.text);
-            setTaskContent(task.content);
-        } else {
-            setTaskName("");
-            setTaskContent("");
+        if (isOpen && isEditMode && task) {
+            setTaskName(task.text || '');
+            setTaskContent(task.content || '');
+        } else if (isOpen && !isEditMode) {
+            setTaskName('');
+            setTaskContent('');
         }
-    }, [isEditMode, task]);
+    }, [isOpen, isEditMode, task]);
 
     const handleSave = () => {
         if (isEditMode) {

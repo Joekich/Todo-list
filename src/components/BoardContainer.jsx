@@ -5,7 +5,7 @@ import TodoItem from "./TodoItem";
 import styled from "styled-components";
 import { useState } from "react";
 
-const BoardContainerWrapper = styled.div`
+const BoardContainerWrapper = styled.section`
   display: flex;
   gap: 1rem;
   flex-wrap: nowrap;

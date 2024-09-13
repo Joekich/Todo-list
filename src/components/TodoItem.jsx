@@ -19,23 +19,19 @@ const ItemContainer = styled.div.withConfig({
   align-items: center;
   padding: 1rem;
   outline: ${({ isOverlay }) => (isOverlay ? '2px solid #d68904' : 'none')};
-
 `;
 
-const TaskText = styled.span.withConfig({
-  shouldForwardProp: (prop) => !['isCompleted'].includes(prop),
-})`
+const TaskText = styled.span`
   text-align: left;
   color: white;
   font-weight: bold;
   margin-bottom: 0.5rem;
-  text-decoration: ${(props) => (props.isCompleted ? "line-through" : "none")};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  cursor: pointer;
   max-width: 250px;
   width: 100%;
+
 `;
 
 const ButtonContainer = styled.div`
@@ -86,6 +82,7 @@ const TodoItem = memo(({ task, deleteTask, openEditModal, isOverlay }) => {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
+    cursor: isOverlay ? 'grabbing' : 'grab',
   };
 
   return (
