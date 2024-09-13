@@ -2,9 +2,11 @@ import styled from "styled-components";
 import TodoItem from "./TodoItem";
 import Modal from "./Modal/Modal";
 import ModalAddTask from "./Modal/ModalAddTask";
+import AddTaskIcon from '../icons/AddTaskIcon.svg?react';
+import TodoListMenuIcon from '../icons/TodoListMenuIcon.svg?react';
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities"
-import { useState, memo } from "react";
+import { useState, useRef, useEffect } from "react";
 import { nanoid } from "nanoid";
 
 const ListContainer = styled.article.withConfig({
@@ -21,18 +23,17 @@ const ListContainer = styled.article.withConfig({
   height: auto;
   width: 365px;
   flex-shrink: 0;
-  height: 410px;
+  height: 600px;
   background-color: ${({ isOverlay }) => (isOverlay ? '#ebd8c7' : '#ffebd9')};
   outline: ${({ isOverlay }) => (isOverlay ? '#d68904 2px solid' : 'none')};
   opacity: ${({ isDragging }) => (isDragging ? '0.5' : '1')};
+  overflow: visible;
 
-  @media (max-width: 1024px) {
+  @media (max-width: 1023px) {
     width: 100%;
     padding: 8px;
     height: auto;
   }
-
-  
 `;
 
 const TitleContainer = styled.div`
@@ -40,9 +41,11 @@ const TitleContainer = styled.div`
   position: sticky;
   top: 0;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   padding: 1rem;
+  z-index: 2;
 `;
 
 const Title = styled.h2`
@@ -58,9 +61,8 @@ const Title = styled.h2`
 const ButtonContainer = styled.div`
   display: flex;
   align-items: center;
-  margin-top: 0.5rem;
-  justify-content: space-between;
-  width: 100%;
+  gap: 1 rem;
+  position: relative;
 `;
 
 const TasksContainer = styled.div`
@@ -70,8 +72,9 @@ const TasksContainer = styled.div`
   flex-direction: column;
   gap: 1rem;
   overflow-y: auto;
+  z-index: 1;
 
-  @media (min-width: 1024px) {
+  @media (min-width: 1023px) {
     margin-bottom: 0;
 
     &::-webkit-scrollbar {
@@ -133,7 +136,7 @@ const DeleteButton = styled.button`
   padding: 0.5rem 1rem;
   border-radius: 5px;
   cursor: pointer;
-  margin-left: 0.5rem;
+  width: 100%;
 
   &:hover {
     background-color: #ff4949;
@@ -150,6 +153,8 @@ const EditButton = styled.button`
   padding: 0.5rem 1rem;
   border-radius: 5px;
   cursor: pointer;
+  width: 100%;
+  margin-bottom: 0.5rem;
 
   &:hover {
     background-color: #896550;
@@ -161,26 +166,67 @@ const EditButton = styled.button`
 `;
 
 const AddTaskButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: #4caf50;
   color: white;
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 5px;
   cursor: pointer;
-  margin-left: 0.5rem;
+  height: 40px;
+  opacity: 0.7;
+  z-index: 1;
 
   &:hover {
-    background-color: #45a049;
+    opacity: 1;
+    outline: 3px solid #45a049;
   }
 `;
 
-const TodoList = memo(({ id, tasks, title, isDragging, isOverlay, setTodoLists }) => {
+const MenuButton = styled.button.withConfig({
+  shouldForwardProp: (prop) => !['isOpen'].includes(prop),
+})`
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transform: ${({ isOpen }) => (isOpen ? 'rotate(-180deg)' : 'rotate(0deg)')};
+  transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+
+`;
+
+const DropdownMenu = styled.div.withConfig({
+  shouldForwardProp: (prop) => !['isOpen'].includes(prop),
+})`
+  position: absolute;
+  top: 100%;
+  left: -70%;
+  background-color: #fff;
+  border: 1px solid #A78B71;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  z-index: 9999;
+  visibility: ${({ isOpen }) => (isOpen ? 'visible' : 'hidden')};
+  margin-top: 8px;
+  transform: ${({ isOpen }) => (isOpen ? 'translateY(0)' : 'translateY(-10px)')};
+  opacity: ${({ isOpen }) => (isOpen ? 1 : 0)};
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out, visibility 0s linear ${({ isOpen }) => (isOpen ? '0s' : '0.5s')};
+`;
+
+const TodoList = ({ id, tasks, title, isDragging, isOverlay, setTodoLists }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [newListTitle, setNewListTitle] = useState(title);
   const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [isEditTaskModalOpen, setIsEditTaskModalOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const menuRef = useRef(null);
+  const buttonRef = useRef(null);
 
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
 
@@ -188,6 +234,27 @@ const TodoList = memo(({ id, tasks, title, isDragging, isOverlay, setTodoLists }
     transform: CSS.Transform.toString(transform),
     transition,
   };
+
+  const handleClickOutside = (event) => {
+    if (
+      menuRef.current &&
+      !menuRef.current.contains(event.target) &&
+      buttonRef.current &&
+      !buttonRef.current.contains(event.target)
+    ) {
+      setIsMenuOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const handleDeleteList = () => {
     if (window.confirm('Are you sure you want to delete this list and all tasks?')) {
@@ -199,6 +266,7 @@ const TodoList = memo(({ id, tasks, title, isDragging, isOverlay, setTodoLists }
     setIsEditMode(true);
     setNewListTitle(title);
     setIsModalOpen(true);
+    setIsMenuOpen(false);
   };
 
   const handleModalSubmit = () => {
@@ -257,18 +325,30 @@ const TodoList = memo(({ id, tasks, title, isDragging, isOverlay, setTodoLists }
     );
   };
 
+  const toggleMenu = (e) => {
+    e.stopPropagation();
+    setIsMenuOpen((prev) => !prev);
+  };
+
   return (
     <ListContainer ref={setNodeRef} style={style} isDragging={isDragging} isOverlay={isOverlay}>
       <TitleContainer>
         <Title>{title}</Title>
         <ButtonContainer>
-          <EditButton onClick={handleEditListName}>Edit</EditButton>
-          <AddTaskButton onClick={() => setIsAddTaskModalOpen(true)}>Add Task</AddTaskButton>
-          <DeleteButton onClick={handleDeleteList}>Delete</DeleteButton>
+          <MenuButton ref={buttonRef} onClick={toggleMenu} isOpen={isMenuOpen}>
+            <TodoListMenuIcon />
+          </MenuButton>
+          <DropdownMenu ref={menuRef} isOpen={isMenuOpen}>
+            <EditButton onClick={handleEditListName}>Edit</EditButton>
+            <DeleteButton onClick={handleDeleteList}>Delete</DeleteButton>
+          </DropdownMenu>
           <DragButton isOverlay={isOverlay} {...attributes} {...listeners}>:::</DragButton>
         </ButtonContainer>
       </TitleContainer>
       <TasksContainer>
+        <AddTaskButton onClick={() => setIsAddTaskModalOpen(true)}>
+          <AddTaskIcon />
+        </AddTaskButton>
         {tasks.map((task) => (
           <TodoItem
             key={task.id}
@@ -302,6 +382,6 @@ const TodoList = memo(({ id, tasks, title, isDragging, isOverlay, setTodoLists }
       />
     </ListContainer>
   );
-});
+};
 
 export default TodoList;

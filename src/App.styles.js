@@ -26,7 +26,7 @@ export const Container = styled.main`
   padding: 1rem;
   box-sizing: border-box;
 
-  @media (max-width: 1024px) {
+  @media (max-width: 1023px) {
     flex-direction: column;
     padding: 10px;
   }
@@ -66,5 +66,22 @@ export const AddListButton = styled.button`
 
   &:active {
     background-color: #6F4E37;
+  }
+`;
+
+export const MobilePlaceholder = styled.div`
+  display: none;
+
+  @media (max-width: 1023px) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    background-color: #ffebd9;
+    color: #583E26;
+    font-size: 1.5rem;
+    padding: 1rem;
+    text-align: center;
   }
 `;

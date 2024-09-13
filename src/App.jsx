@@ -1,4 +1,4 @@
-import { Container, GlobalStyle, Header, AddListButton } from './App.styles';
+import { Container, GlobalStyle, Header, AddListButton, MobilePlaceholder } from './App.styles';
 import { useState } from 'react';
 import { nanoid } from "nanoid";
 import Modal from './components/Modal/Modal';
@@ -57,6 +57,9 @@ const App = () => {
   return (
     <>
       <GlobalStyle />
+      <MobilePlaceholder>
+        <p>The site is not available on mobile devices, please try on a device with a resolution of 1024 pixels or more.</p>
+      </MobilePlaceholder>
       <Container>
         <Header>
           <h1>Todo List</h1>

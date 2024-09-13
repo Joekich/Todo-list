@@ -40,7 +40,7 @@ const ButtonContainer = styled.div`
   justify-content: flex-start;
   width: 100%;
 
-  @media (min-width: 1024px) {
+  @media (min-width: 1023px) {
     flex-direction: row;
     justify-content: flex-end;
     flex-wrap: nowrap;
@@ -52,7 +52,7 @@ const ButtonContainer = styled.div`
     margin-right: 0.5rem;
     width: calc(33.33% - 0.5rem);
 
-    @media (min-width: 1024px) {
+    @media (min-width: 1023px) {
       margin-top: 0;
       margin-left: 0.5rem;
       width: auto;

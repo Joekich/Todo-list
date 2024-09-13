@@ -16,7 +16,7 @@ const BoardContainerWrapper = styled.section`
   background-color: #FFFFFF;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  min-height: 460px;
+  min-height: 650px;
   margin-top: 2rem;
   overflow-x: auto;
 
