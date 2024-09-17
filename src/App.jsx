@@ -1,11 +1,20 @@
-import { Container, GlobalStyle, Header, AddListButton, MobilePlaceholder } from './App.styles';
+import { Container, GlobalStyle, Header, AddListButton, MobilePlaceholder, TitleContainer, ToggleContainer } from './App.styles';
+import { ThemeProvider } from 'styled-components';
 import { useState } from 'react';
 import { nanoid } from "nanoid";
 import Modal from './components/Modal/Modal';
 import BoardContainer from './components/BoardContainer';
+import ToggleTheme from './components/ToggleTheme';
+import { defaultTheme, darkTheme } from './components/Themes'
 
 const App = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [theme, setTheme] = useState(defaultTheme);
+
+  const toggleTheme = () => {
+    setTheme(theme === defaultTheme ? darkTheme : defaultTheme);
+  };
+
   const [todoLists, setTodoLists] = useState([
     {
       "id": "1LfHP7_xlKLPtQ1i-n8mk",
@@ -56,28 +65,35 @@ const App = () => {
 
   return (
     <>
-      <GlobalStyle />
-      <MobilePlaceholder>
-        <p>The site is not available on mobile devices, please try on a device with a resolution of 1024 pixels or more.</p>
-      </MobilePlaceholder>
-      <Container>
-        <Header>
-          <h1>Todo List</h1>
-        </Header>
-        <AddListButton onClick={openModal}>Add List</AddListButton>
+      <ThemeProvider theme={theme}>
+        <GlobalStyle />
+        <MobilePlaceholder>
+          <p>The site is not available on mobile devices, please try on a device with a resolution of 1024 pixels or more.</p>
+        </MobilePlaceholder>
+        <Container>
+          <Header>
+            <TitleContainer>
+              <h1>Todo List</h1>
+            </TitleContainer>
+            <ToggleContainer>
+              <ToggleTheme toggleTheme={toggleTheme} />
+            </ToggleContainer>
+          </Header>
+          <AddListButton onClick={openModal}>Add List</AddListButton>
 
-        <BoardContainer
-          todoLists={todoLists}
-          setTodoLists={setTodoLists}
-        />
-        <Modal
-          isOpen={isModalOpen}
-          onClose={closeModal}
-          onSubmit={addNewList}
-          newListTitle={newListTitle}
-          setNewListTitle={setNewListTitle}
-        />
-      </Container>
+          <BoardContainer
+            todoLists={todoLists}
+            setTodoLists={setTodoLists}
+          />
+          <Modal
+            isOpen={isModalOpen}
+            onClose={closeModal}
+            onSubmit={addNewList}
+            newListTitle={newListTitle}
+            setNewListTitle={setNewListTitle}
+          />
+        </Container>
+      </ThemeProvider>
     </>
   );
 };

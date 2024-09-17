@@ -1,7 +1,7 @@
 import { DndContext, useSensor, useSensors, PointerSensor, TouchSensor, DragOverlay } from "@dnd-kit/core";
 import { SortableContext, arrayMove, rectSortingStrategy, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import TodoList from "./TodoList";
-import TodoItem from "./TodoItem";
+import TodoList from "./TodoList/TodoList";
+import TodoItem from "./TodoItem/TodoItem";
 import styled from "styled-components";
 import { useState } from "react";
 
@@ -13,11 +13,11 @@ const BoardContainerWrapper = styled.section`
   align-items: flex-start;
   width: 100%;
   padding: 1rem;
-  background-color: #FFFFFF;
+  background-color: ${({ theme }) => theme.background};
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   min-height: 650px;
-  margin-top: 2rem;
+  margin-top: 1rem;
   overflow-x: auto;
 
   &::-webkit-scrollbar {
@@ -33,21 +33,21 @@ const BoardContainerWrapper = styled.section`
 
   &:hover {
     &::-webkit-scrollbar {
-      background-color: #f5f5f5;
+      background-color: ${({ theme }) => theme.scrollbarBackground};
     }
 
     &::-webkit-scrollbar-thumb {
-      background-color: #A78B71;
-      border: 3px solid #f5f5f5;
+      background-color: ${({ theme }) => theme.scrollbarThumb};
+      border: 3px solid ${({ theme }) => theme.scrollbarBorder};
     }
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    background-color: #8b6a4f;
+    background-color: ${({ theme }) => theme.scrollbarThumbHover};
   }
 
   &::-webkit-scrollbar-track {
-    background-color: #ffffff;
+    background-color: ${({ theme }) => theme.scrollbarTrack};
     border-radius: 10px;
   }
 `;

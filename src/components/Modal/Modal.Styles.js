@@ -6,7 +6,7 @@ export const ModalOverlay = styled.div`
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: ${({ theme }) => theme.modalOverlayBg};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -14,7 +14,7 @@ export const ModalOverlay = styled.div`
 `;
 
 export const ModalContainer = styled.div`
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.modalContainerBg};
   width: 400px;
   padding: 1.5rem;
   border-radius: 10px;
@@ -32,7 +32,7 @@ export const ModalHeader = styled.div`
 export const ModalTitle = styled.h2`
   margin: 0;
   font-size: 1.5rem;
-  color: #583E26;
+  color: ${({ theme }) => theme.modalTitleColor};
 `;
 
 export const CloseButton = styled.button`
@@ -40,7 +40,7 @@ export const CloseButton = styled.button`
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
-  color: #A78B71;
+  color: ${({ theme }) => theme.modalCloseButtonColor};
 `;
 
 export const ModalBody = styled.div`
@@ -66,13 +66,12 @@ export const ModalButton = styled.button.withConfig({
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  background-color: ${(props) => (props.primary ? "#A78B71" : "#ccc")};
-  color: ${(props) => (props.primary ? "white" : "black")};
-  background-color: #A78B71;
+  background-color: ${({ theme, primary }) => (primary ? theme.modalButtonPrimaryBg : theme.modalButtonSecondaryBg)};
+  color: ${(props) => props.primary ? props.theme.modalButtonPrimaryText : props.theme.modalButtonSecondaryText};
 
   &:hover {
     opacity: 0.9;
-    background-color: #896550;
+    background-color: ${({ theme, primary }) => (primary ? theme.modalButtonPrimaryHoverBg : theme.modalButtonSecondaryHoverBg)};
   }
 `;
 

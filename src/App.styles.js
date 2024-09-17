@@ -10,7 +10,7 @@ export const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
-    background-color: #F5EDED;
+    background-color: ${({ theme }) => theme.containerBackground};
     color: #333;
     overflow-x: hidden;
   }
@@ -34,38 +34,57 @@ export const Container = styled.main`
 
 export const Header = styled.header`
   display: flex;
-  justify-content: center;
-  background-color: #A78B71;
+  justify-content: space-between;
+  align-items: center;
+  background-color: ${({ theme }) => theme.headerBackground};
   color: white;
   padding: 1rem;
   text-align: left;
   width: 100%;
   border-radius: 8px;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 
   div {
     font-size: 2rem;
-    color: #0077b6;
   }
 `;
 
+export const TitleContainer = styled.div`
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  h1 {
+    margin-left: 4rem;
+    font-size: 2rem;
+  }
+`;
+
+export const ToggleContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-right: 1rem;
+`;
+
 export const AddListButton = styled.button`
-  background-color: #A78B71;
-  color: white;
+  background-color: ${({ theme }) => theme.buttonBg};
+  color: ${({ theme }) => theme.color};
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 1.2rem;
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: #896550;
+    background-color: ${({ theme }) => theme.buttonBgHover};
   }
 
   &:active {
-    background-color: #6F4E37;
+    background-color: ${({ theme }) => theme.buttonBgActive};
   }
 `;
 
