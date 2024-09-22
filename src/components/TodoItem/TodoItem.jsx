@@ -5,9 +5,8 @@ import DeleteIcon from '../icons/DeleteIcon.svg?react';
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { memo } from "react";
 
-const TodoItem = memo(({ task, deleteTask, openEditModal, isOverlay, theme }) => {
+const TodoItem = ({ task, deleteTask, openEditModal, isOverlay, theme }) => {
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: task.id });
   const style = {
@@ -40,6 +39,6 @@ const TodoItem = memo(({ task, deleteTask, openEditModal, isOverlay, theme }) =>
       </ButtonContainer>
     </ItemContainer >
   );
-});
+};
 
 export default TodoItem;

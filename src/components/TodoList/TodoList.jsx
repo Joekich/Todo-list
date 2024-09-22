@@ -76,12 +76,7 @@ const TodoList = ({ id, tasks, title, isDragging, isOverlay, setTodoLists }) => 
   const handleAddTaskSubmit = (taskName, taskContent) => {
     setTodoLists((prevLists) =>
       prevLists.map((list) =>
-        list.id === id
-          ? {
-            ...list,
-            tasks: [...list.tasks, { id: nanoid(), text: taskName, content: taskContent }],
-          }
-          : list
+        list.id === id ? { ...list, tasks: [...list.tasks, { id: nanoid(), text: taskName, content: taskContent }] } : list
       )
     );
     setIsAddTaskModalOpen(false);
@@ -90,24 +85,22 @@ const TodoList = ({ id, tasks, title, isDragging, isOverlay, setTodoLists }) => 
   const handleEditTaskSubmit = (taskId, taskName, taskContent) => {
     setTodoLists((prevLists) =>
       prevLists.map((list) =>
-        list.id === id
-          ? {
-            ...list,
-            tasks: list.tasks.map(task =>
-              task.id === taskId
-                ? { ...task, text: taskName, content: taskContent }
-                : task
-            ),
-          }
-          : list
+        list.id === id ? { ...list, tasks: list.tasks.map(task => task.id === taskId ? { ...task, text: taskName, content: taskContent } : task) } : list
       )
     );
     setIsEditTaskModalOpen(false);
+    window.history.pushState(null, '', '/');
   };
 
   const handleOpenEditModal = (task) => {
     setSelectedTask(task);
     setIsEditTaskModalOpen(true);
+    window.history.pushState(null, '', `/task/${task.id}`);
+  };
+
+  const handleCloseEditModal = () => {
+    setIsEditTaskModalOpen(false);
+    window.history.pushState(null, '', '/');
   };
 
   const handleDeleteTask = (taskId) => {
@@ -168,7 +161,7 @@ const TodoList = ({ id, tasks, title, isDragging, isOverlay, setTodoLists }) => 
       />
       <ModalAddTask
         isOpen={isEditTaskModalOpen}
-        onClose={() => setIsEditTaskModalOpen(false)}
+        onClose={handleCloseEditModal}
         onAddTask={handleEditTaskSubmit}
         task={selectedTask}
         isEditMode={true}

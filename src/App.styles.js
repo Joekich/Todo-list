@@ -70,14 +70,13 @@ export const ToggleContainer = styled.div`
 
 export const AddListButton = styled.button`
   background-color: ${({ theme }) => theme.buttonBg};
-  color: ${({ theme }) => theme.color};
+  color: ${({ theme }) => theme.addListButtonColor};
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
   font-size: 1.2rem;
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s ease;
 
   &:hover {
     background-color: ${({ theme }) => theme.buttonBgHover};

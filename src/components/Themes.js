@@ -1,3 +1,5 @@
+import { AddListButton } from "../App.styles";
+
 export const defaultTheme = {
     background: "#FFFFFF",
     containerBackground: "#ffebd9",
@@ -7,6 +9,7 @@ export const defaultTheme = {
     textColor: "#333",
     taskBackground: "#A78B71",
     color: "#333",
+    addListButtonColor: "white",
     itemContainer: "#A78B71",
     itemContainerOverlay: "#ebd8c7",
     itemContainerBorder: "#A78B71",
@@ -34,7 +37,7 @@ export const defaultTheme = {
     modalTitleColor: "#583E26",
     modalButtonPrimaryBg: "#A78B71",
     modalButtonPrimaryHoverBg: "#896550",
-    modalButtonSecondaryBg: "#ccc",
+    modalButtonSecondaryBg: "#A78B71",
     modalButtonSecondaryHoverBg: "#bbb",
     modalCloseButtonColor: "#A78B71",
     scrollbarBackground: "#f5f5f5",
@@ -53,6 +56,7 @@ export const darkTheme = {
     textColor: "#CFCFCF",
     taskBackground: "#414141",
     color: "black",
+    addListButtonColor: "white",
     itemContainer: "#414141",
     itemContainerOverlay: "#565656",
     itemContainerBorder: "#565656",
